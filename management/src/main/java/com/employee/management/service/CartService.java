@@ -79,5 +79,14 @@ public class CartService {
         orElseGet(List::of);
     }
 
+    @Transactional
+
+    public void clearCart(Integer studentId){
+        Optional<Student> studentOpt = studentRepository.findById(studentId);
+        if(studentOpt.isEmpty()) return;
+        Student student = studentOpt.get();
+        cartItemRepository.deleteByStudentId(student.getId());
+    }
+
     
 }

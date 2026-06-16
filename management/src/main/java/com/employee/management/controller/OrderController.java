@@ -1,5 +1,6 @@
 package com.employee.management.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,7 +22,7 @@ public class OrderController {
 
     public ResponseEntity<OrderResponse> createOrder(@RequestHeader("X-Student-ID") Integer student_id){
         return orderService.createOrder(student_id)
-        .map(orderResponse->new ResponseEntity<>(orderResponse,HttpStatus))
+        .map(orderResponse->new ResponseEntity<>(orderResponse,HttpStatus.CREATED))
         .orElseGet(()->ResponseEntity.badRequest().build());
     }
     

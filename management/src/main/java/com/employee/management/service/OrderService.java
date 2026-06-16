@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.employee.management.dto.OrderItemDTO;
 import com.employee.management.dto.OrderResponse;
 import com.employee.management.model.CartItem;
 import com.employee.management.model.Order;
@@ -13,7 +14,7 @@ import com.employee.management.model.OrderItem;
 import com.employee.management.model.OrderStatus;
 import com.employee.management.model.Student;
 import com.employee.management.repository.StudentRepository;
-import com.employee.management.repository.CartItemRepository;
+// import com.employee.management.repository.CartItemRepository;
 import com.employee.management.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class OrderService {
     private final CartService cartService;
     private final StudentRepository studentRepository;
     private final OrderRepository orderRepository;
-    private final CartItemRepository cardItemRepository;
+    // private final CartItemRepository cardItemRepository;
 
     public Optional<OrderResponse> createOrder(Integer studentid){
 
@@ -68,10 +69,25 @@ public class OrderService {
         Order savOrder = orderRepository.save(order);
 
         //Clear the cart
+
+        cartService.clearCart(studentid);
+        return Optional.of(mapToOrderResponse(savOrder));
     
+    }
 
-        
-
+    private OrderResponse mapToOrderResponse(Order savedOrder){
+        return new OrderResponse(
+            savedOrder.getId(),
+            savedOrder.getTotalAmount(),
+            savedOrder.getStatus(),
+            savedOrder.getItems().stream().map(orderItem -> new OrderItemDTO(
+                orderItem.getId(),
+                orderItem.getProduct().getId(),
+                orderItem.getQuantity(),
+                orderItem.getPrice(),
+                orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity()))
+            )).toList(),savedOrder.getCreatedAt()
+        );
     }
     
 }

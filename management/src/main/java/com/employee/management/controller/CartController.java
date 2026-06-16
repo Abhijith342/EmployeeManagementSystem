@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.employee.management.dto.CartItemRequest;
 import com.employee.management.model.CartItem;
 import com.employee.management.service.CartService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -54,6 +53,12 @@ public class CartController {
     @GetMapping
     public ResponseEntity<List<CartItem>> getCart(@RequestHeader("X-Student-ID") Integer studentId){
         return ResponseEntity.ok(cartService.getCart(studentId));
+    }
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<String> clearCart(@RequestHeader("X-Student-ID") Integer studentId){
+        cartService.clearCart(studentId);
+        return ResponseEntity.ok("Cart cleared");
     }
 
 
